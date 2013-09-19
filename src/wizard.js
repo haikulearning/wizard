@@ -1,6 +1,6 @@
-/*
+/**
  * wizard
- * https://github.com/rileylark/wizard
+ * https://github.com/haikulearning/wizard
  *
  * Copyright (c) 2013 Haiku Learning, Inc.
  * Licensed under the MIT license.
@@ -51,191 +51,188 @@
  * see the defaultOptions object below.
  */
 
-(function ($, window, undefined) {
-    'use strict';
-    var PLUGIN_NAME = 'wizard';
+( function($, window, undefined) {'use strict';
+        var PLUGIN_NAME = 'wizard';
 
+        $.fn[PLUGIN_NAME] = function(wizardDefinition) {
 
-    $.fn[PLUGIN_NAME] = function (wizardDefinition) {
+            var options = $.extend({}, defaultOptions, wizardDefinition);
 
-        var options = $.extend({}, defaultOptions, wizardDefinition);
+            return this.each(function() {
+                var element = $(this);
 
-        return this.each(function () {
-            var element = $(this);
-
-            if (!element.data('plugin_' + PLUGIN_NAME)) {
-                element.data('plugin_' + PLUGIN_NAME, true);
-                construct(element, options);
-            }
-        });
-    };
-
-    /**
-     * These are all optional parameters.  You can override them by defining them in the object you
-     * pass in to the plugin.
-     */
-    var defaultOptions = {
-        /**
-         * This function will be called if the next button is clicked and any validations are generated.
-         *
-         * @param validations
-         */
-        displayValidations: function (validations) {
-            window.alert(validations);
-        },
-
-        /**
-         * This function will be called if the current data-wizard-step has a title attribute.
-         *
-         * @param newTitle the value of the title attribute
-         */
-        setTitle: function (newTitle) {
-            window.alert("Override this function to display the title (" + newTitle + ") of your data-wizard-step somewhere fancy.");
-        },
-
-        /**
-         * This function will be called whenever the next button is clicked and there is no next step
-         */
-        finish: function () {
-            window.alert("Override this function to perform a final save action, close action, etc.");
-        },
-
-        /**
-         * The plugin will look for the current state in the validations object.  If the current
-         * state maps to a function, then the function will be executed. If the function returns null
-         * or undefined, then there are no validations and the wizard can proceed.  But, if the function
-         * returns a string, then that string will be displayed with `displayValidations` and the wizard
-         * will NOT proceed.
-         */
-        validations: {}
-    };
-
-    function construct(scope, wizard) {
-
-        //initialize
-        var history = [];
-
-        allWizardSteps().hide();
-        goForward(wizard.initialState);
-
-        //event handlers
-        nextButton().click(goToNextStep);
-
-        backButton().click(function () {
-            if (!$(this).hasClass('disabled')) {
-                goBack();
-            }
-        });
-
-        inputsThatAffectNav().on('change', updateNextButtonText);
-
-        //selectors
-
-        function nextButton() {
-            return scope.find('[data-wizard-next-button]');
-        }
-
-        function backButton() {
-            return scope.find('[data-wizard-back-button]');
-        }
-
-        /**
-         * The elements returned by this selector might change what step is coming up next.
-         * Add this attribute to inputs that change the navigational flow of the wizard, so that
-         * this plugin knows to update itself.
-         */
-        function inputsThatAffectNav() {
-            return scope.find('[data-wizard-affects-nav]');
-        }
-
-        /**
-         * Mark each step in your wizard with this attribute so we know what elements to page through
-         * @returns {a list including every page of the wizard}
-         */
-        function allWizardSteps() {
-            return scope.find('[data-wizard-step]');
-        }
-
-        //implementation
-
-        function goToNextStep() {
-            var current = history[history.length - 1];
-
-
-            var validationGenerator = wizard.validations[current];
-            var validations;
-
-            if (validationGenerator) {
-                validations = validationGenerator();
-            }
-
-            if (validations) {
-                wizard.displayValidations(validations);
-            } else {
-                var next = getNextStep();
-
-                if (next !== undefined) {
-                    goForward(next);
-                } else {
-                    wizard.finish();
-                }
-            }
-        }
-
-        function updateNextButtonText() {
-            var next = getNextStep();
-
-            if (next === undefined) {
-                nextButton().val("Finish");
-            } else {
-                nextButton().val("Next");
-            }
-        }
-
-        function getNextStep() {
-            var current = history[history.length - 1];
-            var next = wizard.mapToNextStep[current];
-
-            if (typeof next === 'function') {
-                next = next();
-            }
-
-            return next;
-        }
-
-
-        function goBack() {
-            history.pop();
-
-            if (history.length === 1) {
-                backButton().addClass('disabled');
-            }
-            goTo();
-        }
-
-        function goForward(state) {
-            history.push(state);
-
-            if (history.length > 1) {
-                backButton().removeClass('disabled');
-            }
-
-            goTo();
-        }
-
-        function goTo() {
-            var state = history[history.length - 1];
-
-            allWizardSteps().fadeOut('fast').promise().then(function () {
-                var thisPage = scope.find(state);
-                thisPage.fadeIn('fast');
-                updateNextButtonText();
-
-                if (thisPage.attr('title')) {
-                    wizard.setTitle(thisPage.attr('title'));
+                if (!element.data('plugin_' + PLUGIN_NAME)) {
+                    element.data('plugin_' + PLUGIN_NAME, true);
+                    construct(element, options);
                 }
             });
+        };
+
+        /**
+         * These are all optional parameters.  You can override them by defining them in the object you
+         * pass in to the plugin.
+         */
+        var defaultOptions = {
+            /**
+             * This function will be called if the next button is clicked and any validations are generated.
+             *
+             * @param validations
+             */
+            displayValidations : function(validations) {
+                window.alert(validations);
+            },
+
+            /**
+             * This function will be called if the current data-wizard-step has a title attribute.
+             *
+             * @param newTitle the value of the title attribute
+             */
+            setTitle : function(newTitle) {
+                window.alert("Override this function to display the title (" + newTitle + ") of your data-wizard-step somewhere fancy.");
+            },
+
+            /**
+             * This function will be called whenever the next button is clicked and there is no next step
+             */
+            finish : function() {
+                window.alert("Override this function to perform a final save action, close action, etc.");
+            },
+
+            /**
+             * The plugin will look for the current state in the validations object.  If the current
+             * state maps to a function, then the function will be executed. If the function returns null
+             * or undefined, then there are no validations and the wizard can proceed.  But, if the function
+             * returns a string, then that string will be displayed with `displayValidations` and the wizard
+             * will NOT proceed.
+             */
+            validations : {}
+        };
+
+        function construct(scope, wizard) {
+
+            //initialize
+            var history = [];
+
+            allWizardSteps().hide();
+            goForward(wizard.initialState);
+
+            //event handlers
+            nextButton().click(goToNextStep);
+
+            backButton().click(function() {
+                if (!$(this).hasClass('disabled')) {
+                    goBack();
+                }
+            });
+
+            inputsThatAffectNav().on('change', updateNextButtonText);
+
+            //selectors
+
+            function nextButton() {
+                return scope.find('[data-wizard-next-button]');
+            }
+
+            function backButton() {
+                return scope.find('[data-wizard-back-button]');
+            }
+
+            /**
+             * The elements returned by this selector might change what step is coming up next.
+             * Add this attribute to inputs that change the navigational flow of the wizard, so that
+             * this plugin knows to update itself.
+             */
+            function inputsThatAffectNav() {
+                return scope.find('[data-wizard-affects-nav]');
+            }
+
+            /**
+             * Mark each step in your wizard with this attribute so we know what elements to page through
+             * @returns {a list including every page of the wizard}
+             */
+            function allWizardSteps() {
+                return scope.find('[data-wizard-step]');
+            }
+
+            //implementation
+
+            function goToNextStep() {
+                var current = history[history.length - 1];
+
+                var validationGenerator = wizard.validations[current];
+                var validations;
+
+                if (validationGenerator) {
+                    validations = validationGenerator();
+                }
+
+                if (validations) {
+                    wizard.displayValidations(validations);
+                } else {
+                    var next = getNextStep();
+
+                    if (next !== undefined) {
+                        goForward(next);
+                    } else {
+                        wizard.finish();
+                    }
+                }
+            }
+
+            function updateNextButtonText() {
+                var next = getNextStep();
+
+                if (next === undefined) {
+                    nextButton().val("Finish");
+                } else {
+                    nextButton().val("Next");
+                }
+            }
+
+            function getNextStep() {
+                var current = history[history.length - 1];
+                var next = wizard.mapToNextStep[current];
+
+                if ( typeof next === 'function') {
+                    next = next();
+                }
+
+                return next;
+            }
+
+            function goBack() {
+                history.pop();
+
+                if (history.length === 1) {
+                    backButton().addClass('disabled');
+                }
+                goTo();
+            }
+
+            function goForward(state) {
+                history.push(state);
+
+                if (history.length > 1) {
+                    backButton().removeClass('disabled');
+                }
+
+                goTo();
+            }
+
+            function goTo() {
+                var state = history[history.length - 1];
+
+                allWizardSteps().fadeOut('fast').promise().then(function() {
+                    var thisPage = scope.find(state);
+                    thisPage.fadeIn('fast');
+                    updateNextButtonText();
+
+                    if (thisPage.attr('title')) {
+                        wizard.setTitle(thisPage.attr('title'));
+                    }
+                });
+            }
+
         }
 
-    }
-}(jQuery, window));
+    }(jQuery, window));
