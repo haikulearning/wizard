@@ -157,14 +157,7 @@
             //implementation
 
             function goToNextStep() {
-                var current = history[history.length - 1];
-
-                var validationGenerator = wizard.validations[current];
-                var validations;
-
-                if (validationGenerator) {
-                    validations = validationGenerator();
-                }
+                var validations = getValidationsForCurrentStep();
 
                 if (validations) {
                     wizard.displayValidations(validations);
@@ -177,6 +170,19 @@
                         wizard.finish();
                     }
                 }
+            }
+
+            function getValidationsForCurrentStep() {
+                var current = history[history.length - 1];
+
+                var validationGenerator = wizard.validations[current];
+                var validations;
+
+                if (validationGenerator) {
+                    validations = validationGenerator();
+                }
+
+                return validations;
             }
 
             function updateNextButtonText() {
