@@ -1,27 +1,45 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Wizard Test Suite</title>
-  <!-- Load local jQuery. This can be overridden with a ?jquery=___ param. -->
-  <script src="../libs/jquery-loader.js"></script>
-  <!-- Load local QUnit. -->
-  <link rel="stylesheet" href="../libs/qunit/qunit.css" media="screen">
-  <script src="../libs/qunit/qunit.js"></script>
-  <!-- Load local lib and tests. -->
-  <script src="../src/wizard.js"></script>
-  <script src="wizard_test.js"></script>
-  <!-- Removing access to jQuery and $. But it'll still be available as _$, if
-       you REALLY want to mess around with jQuery in the console. REMEMBER WE
-       ARE TESTING A PLUGIN HERE, THIS HELPS ENSURE BEST PRACTICES. REALLY. -->
-  <script>window._$ = jQuery.noConflict(true);</script>
-</head>
-<body>
-  <div id="qunit"></div>
-  <div id="qunit-fixture">
-    <span>lame test markup</span>
-    <span>normal test markup</span>
-    <span>awesome test markup</span>
-  </div>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<title>Wizard Test Suite</title>
+		<!-- Load local jQuery. This can be overridden with a ?jquery=___ param. -->
+		<script src="../libs/jquery-loader.js"></script>
+		<!-- Load local QUnit. -->
+		<link rel="stylesheet" href="../libs/qunit/qunit.css" media="screen">
+		<script src="../libs/qunit/qunit.js"></script>
+		<!-- Load local lib and tests. -->
+		<script src="../src/wizard.js"></script>
+		<script src="wizard_test.js"></script>
+		<!-- Removing access to jQuery and $. But it'll still be available as _$, if
+		you REALLY want to mess around with jQuery in the console. REMEMBER WE
+		ARE TESTING A PLUGIN HERE, THIS HELPS ENSURE BEST PRACTICES. REALLY. -->
+		<script>
+			window._$ = jQuery.noConflict(true);
+		</script>
+	</head>
+	<body>
+		<div id="qunit"></div>
+		<div id="qunit-fixture">
+			<div id="wizard1">
+				<div data-wizard-step id="step1">
+					Step 1!
+				</div>
+				<div data-wizard-step id="second-step">
+					Step 2!
+				</div>
+				<div data-wizard-step id="third-step">
+				    This is the third step.
+				</div>
+
+				<button data-wizard-next-button id="next-button">
+					Click this to move to the next page (or finish)
+				</button>
+				<button data-wizard-back-button>
+					Click this to move to the previous page
+				</button>
+			</div>
+		</div>
+
+	</body>
 </html>

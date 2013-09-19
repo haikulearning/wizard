@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Wizard Demo</title>
+        <!-- Load local jQuery. This can be overridden with a ?jquery=___ param. -->
+        <script src="../libs/jquery-loader.js"></script>
+        <script src="../src/wizard.js"></script>
+
+    </head>
+    <body>
+
+        <div id="wizard1">
+            <div data-wizard-step id="step1">
+                Step 1!
+            </div>
+            <div data-wizard-step id="second-step">
+                Step 2!
+            </div>
+            <div data-wizard-step id="third-step">
+                This is the third step.
+            </div>
+
+            <button data-wizard-next-button id="next-button">
+                Click this to move to the next page (or finish)
+            </button>
+            <button data-wizard-back-button>
+                Click this to move to the previous page
+            </button>
+        </div>
+
+        <script>
+            jQuery('#wizard1').wizard({
+                initialState : '#step1',
+                mapToNextStep : {
+                    '#step1' : '#second-step',
+                    '#second-step' : '#third-step'
+                }
+            });
+        </script>
+    </body>
+</html>
