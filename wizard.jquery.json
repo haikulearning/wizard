@@ -3,7 +3,7 @@
   "title": "Wizard",
   "description": "Easy wizard workflows with no network requests.",
   "version": "0.1.0",
-  "homepage": "https://github.com/rileylark/wizard",
+  "homepage": "https://github.com/haikulearning/wizard",
   "author": {
     "name": "Riley",
     "email": "rileyel@haikulearning.com",
@@ -11,13 +11,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rileylark/wizard.git"
+    "url": "https://github.com/haikulearning/wizard.git"
   },
-  "bugs": "https://github.com/rileylark/wizard/issues",
+  "bugs": "https://github.com/haikulearning/wizard/issues",
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/rileylark/wizard/blob/master/LICENSE-MIT"
+      "url": "https://github.com/haikulearning/wizard/blob/master/LICENSE-MIT"
     }
   ],
   "dependencies": {
