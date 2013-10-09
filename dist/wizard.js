@@ -1,4 +1,4 @@
-/*! Wizard - v0.1.0 - 2013-09-19
+/*! Wizard - v0.1.0 - 2013-10-09
 * https://github.com/haikulearning/wizard
 * Copyright (c) 2013 Riley; Licensed MIT */
 /* global jQuery, window */
@@ -160,7 +160,7 @@
             } else {
                 var next = getNextStep();
 
-                if (next !== undefined) {
+                if (next) {
                     goForward(next);
                 } else {
                     wizard.finish();
@@ -208,7 +208,7 @@
             if (history.length === 1) {
                 backButton().addClass('disabled');
             }
-            goTo();
+            goTo(history[history.length - 1]);
         }
 
         function goForward(state) {
@@ -218,16 +218,15 @@
                 backButton().removeClass('disabled');
             }
 
-            goTo();
+            goTo(state);
         }
 
-        function goTo() {
-            var state = history[history.length - 1];
+        function goTo(state) {
+            updateNextButtonText();
 
             allWizardSteps().fadeOut('fast').promise().then(function () {
                 var thisPage = scope.find(state);
                 thisPage.fadeIn('fast');
-                updateNextButtonText();
 
                 if (thisPage.attr('title')) {
                     wizard.setTitle(thisPage.attr('title'));

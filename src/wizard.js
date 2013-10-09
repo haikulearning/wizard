@@ -112,7 +112,7 @@
     function construct(scope, wizard) {
 
         //initialize
-        var history = [], cachedNextStep;
+        var history = [];
 
         allWizardSteps().hide();
         goForward(wizard.initialState);
@@ -197,10 +197,6 @@
         }
 
         function getNextStep() {
-            if (cachedNextStep !== undefined) {
-                return cachedNextStep;
-            }
-
             var current = history[history.length - 1];
             var next = wizard.mapToNextStep[current];
 
@@ -208,7 +204,6 @@
                 next = next();
             }
 
-            cachedNextStep = next || null;
             return next;
         }
 
@@ -218,25 +213,20 @@
             if (history.length === 1) {
                 backButton().addClass('disabled');
             }
-            goTo();
+            goTo(history[history.length - 1]);
         }
 
         function goForward(state) {
             history.push(state);
 
-            cachedNextStep = undefined;
-
             if (history.length > 1) {
                 backButton().removeClass('disabled');
             }
 
-            goTo();
+            goTo(state);
         }
 
-        function goTo() {
-            var state = history[history.length - 1];
-
-
+        function goTo(state) {
             updateNextButtonText();
 
             allWizardSteps().fadeOut('fast').promise().then(function () {

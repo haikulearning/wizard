@@ -1,4 +1,5 @@
-( function ($) {
+(function ($) {
+    'use strict';
     /*
      ======== A Handy Little QUnit Reference ========
      http://api.qunitjs.com/
@@ -27,7 +28,8 @@
             this.wizard1 = $('#wizard1').wizard({
                 initialState: '#step1',
                 mapToNextStep: {
-                    '#step1': '#second-step'
+                    '#step1': '#second-step',
+                    '#second-step': '#third-step'
                 }
             });
         }
@@ -52,16 +54,46 @@
         strictEqual(visibleItems[0], $('#step1')[0], '#step1 should be visible');
     });
 
-    test('goes from first step to second step', function () {
-        expect(1);
+    test('goes from first step to second step to third step', function () {
+        expect(2);
 
         stop();
         $('#next-button').click();
         var wizard = this.wizard1;
         setTimeout(function () {
             strictEqual(wizard.find('[data-wizard-step]:visible')[0], $('#second-step')[0], 'step 2 should be shown');
-            start();
+
+            $('#next-button').click();
+            setTimeout(function () {
+                strictEqual(wizard.find('[data-wizard-step]:visible')[0], $('#third-step')[0], 'step 3 should be shown');
+                start();
+            }, 450);
         }, 450); //need delay to wait for animations to finish
+    });
+
+    test('goes back and forth between steps', function () {
+        var wizard = $('#wizard5').wizard({
+            initialState: '#zstep1',
+            mapToNextStep: {
+                '#zstep1': '#zstep2'
+            }
+        });
+
+        expect(1);
+
+        stop();
+        $('#znext-button').click();
+
+        setTimeout(function () {
+            $('#zprev-button').click();
+            setTimeout(function () {
+                $('#znext-button').click();
+                setTimeout(function () {
+                    strictEqual(wizard.find('[data-wizard-step]:visible')[0], $('#zstep2')[0], 'step 2 should be shown');
+                    start();
+                }, 500);
+            }, 500);
+        }, 500);
     });
 
     test('raises validation', function () {
@@ -100,23 +132,22 @@
         $('#3next-button').click();  //this should call finish because there is no next step
     });
 
-    test('calls branching function for next step', function(){
+    test('calls branching function for next step', function () {
         var wizard4 = $('#wizard4').wizard({
             initialState: '#4step1',
             mapToNextStep: {
-                '#4step1': function() {
-                    ok(true, 'Called branching function, which returns step 3');
+                '#4step1': function () {
                     return '#4step3';
                 }
             }
         });
 
-        expect(2);
+        expect(1);
 
         stop();
         $('#4next-button').click();
 
-        setTimeout(function(){
+        setTimeout(function () {
             start();
             strictEqual(wizard4.find('[data-wizard-step]:visible')[0], $('#4step3')[0], 'step 3 is shown');
 
