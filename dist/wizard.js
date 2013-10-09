@@ -186,8 +186,18 @@
 
             if (next === undefined) {
                 nextButton().val("Finish");
+                nextButton().text("Finish");
             } else {
                 nextButton().val("Next");
+                nextButton().text("Next");
+            }
+        }
+
+        function updateBackButtonEnabledness() {
+            if (history.length > 1) {
+                backButton().removeClass('disabled');
+            } else {
+                backButton().addClass('disabled');
             }
         }
 
@@ -205,19 +215,13 @@
         function goBack() {
             history.pop();
 
-            if (history.length === 1) {
-                backButton().addClass('disabled');
-            }
+            updateBackButtonEnabledness();
             goTo(history[history.length - 1]);
         }
 
         function goForward(state) {
             history.push(state);
-
-            if (history.length > 1) {
-                backButton().removeClass('disabled');
-            }
-
+            updateBackButtonEnabledness();
             goTo(state);
         }
 

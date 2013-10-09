@@ -1,42 +1,125 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Wizard Demo</title>
-        <!-- Load local jQuery. This can be overridden with a ?jquery=___ param. -->
-        <script src="../libs/jquery-loader.js"></script>
-        <script src="../src/wizard.js"></script>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizard Demo</title>
+    <!-- Load local jQuery. This can be overridden with a ?jquery=___ param. -->
+    <script src="../libs/jquery-loader.js"></script>
+    <script src="../src/wizard.js"></script>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 
-    </head>
-    <body>
+</head>
+<body>
 
+<div class="jumbotron">
+    <div class="contianer">
         <div id="wizard1">
             <div data-wizard-step id="step1">
-                Step 1!
+                <h1>
+                    Step 1!
+                </h1>
             </div>
             <div data-wizard-step id="second-step">
-                Step 2!
+                <h1>
+                    Step 2!
+                </h1>
+
+                <div class="row">
+
+                    <div class="alert alert-info">
+                        <p>
+                            The next step in the wizard is usually determined by a string id, but
+                            you can also provide a function that will be evaluated when the user begins to navigate.
+                        </p>
+                    </div>
+                </div>
+                <div class="row well">
+
+                    <form>
+                        <div class="form-inline">
+                            <div class="controls-row">
+
+                                <label class="radio inline control-label">
+                                    <input type="radio" value="#third-step" name="pageRadio"/>
+                                    Go to optional interstitial step!
+                                </label>
+                            </div>
+                            <div class="controls-row">
+                                <label class="radio inline control-label">
+                                    <input type="radio" value="#last-step" name="pageRadio"/>
+                                    Just go to the last step.
+                                </label>
+                            </div>
+                            <div class="controls-row">
+                                <label class="radio inline control-label">
+                                    <input type="radio" value="NO-GO" name="pageRadio"/>
+                                    Don't choose this or you'll get a warning.
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
             </div>
             <div data-wizard-step id="third-step">
-                This is the third step.
+                <h1>
+                    This is the third step.
+                </h1>
+
+                <p>
+                    We might have skipped this step, depending on step 2!
+                </p>
             </div>
 
-            <button data-wizard-next-button id="next-button">
-                Click this to move to the next page (or finish)
+            <div data-wizard-step id="last-step">
+                <h1>Last step!</h1>
+
+                <p>
+                    If you click next now, you'll run the function for submitting the form, doing whatever cleanup work
+                    you need doing, etc.
+                </p>
+            </div>
+
+            <button type="button" class="btn btn-primary" data-wizard-next-button id="next-button">
+                Next
             </button>
-            <button data-wizard-back-button>
-                Click this to move to the previous page
+            <button type="button" class="btn btn-primary" data-wizard-back-button>
+                Previous
             </button>
         </div>
+    </div>
+</div>
 
-        <script>
-            jQuery('#wizard1').wizard({
-                initialState : '#step1',
-                mapToNextStep : {
-                    '#step1' : '#second-step',
-                    '#second-step' : '#third-step'
+<script>
+    jQuery('#wizard1').wizard({
+        initialState: '#step1',
+        mapToNextStep: {
+            '#step1': '#second-step',
+            '#second-step': decideBetweenThirdAndFourthSteps,
+            '#third-step': '#last-step'
+        },
+        validations: {
+            '#second-step': function () {
+                if (jQuery('input[name=pageRadio]:checked').val() === 'NO-GO') {
+                    return "This is the warning!";
                 }
-            });
-        </script>
-    </body>
+            }
+        },
+
+        finish: function () {
+            alert("Congratulations!  You completed the wizard!");
+            jQuery('#wizard1').fadeOut();
+        }
+    });
+
+    function decideBetweenThirdAndFourthSteps() {
+        //do arbitrarily complicated logic here to return the id of the next step
+        console.log("Next: " );
+        var next = jQuery('input[name=pageRadio]:checked').val();
+
+        return next;
+    }
+</script>
+</body>
 </html>
